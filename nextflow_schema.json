@@ -1,0 +1,70 @@
+{
+  "workflow": {
+    "id": "alignment_workflow",
+    "name": "Alignment Workflow",
+    "description": "A workflow to align reads using BWA, convert to BAM using Samtools, generate alignment statistics, and plot the results using Python.",
+    "parameters": {
+      "reference": {
+        "description": "The reference genome file in FASTA format.",
+        "type": "file",
+        "default": "home/graziano/workflow/reference.fasta"
+      },
+      "sample": {
+        "description": "The sample reads file in FASTQ format.",
+        "type": "file",
+        "default": "home/graziano/workflow/sample.fastq"
+      }
+    },
+    "steps": [
+      {
+        "id": "alignReads",
+        "name": "Align Reads",
+        "description": "Aligns the sample reads to the reference genome using BWA.",
+        "script": "bwa index ${reference}; bwa mem ${reference} ${sample} > aligned.sam",
+        "inputs": ["reference", "sample"],
+        "outputs": ["aligned.sam"]
+      },
+      {
+        "id": "convertToBam",
+        "name": "Convert to BAM",
+        "description": "Converts the aligned SAM file to BAM format using Samtools.",
+        "script": "samtools view -S -b aligned.sam > aligned.bam",
+        "inputs": ["aligned.sam"],
+        "outputs": ["aligned.bam"]
+      },
+      {
+        "id": "generateStats",
+        "name": "Generate Statistics",
+        "description": "Generates alignment statistics using Samtools.",
+        "script": "samtools flagstat aligned.bam > alignment_stats.txt",
+        "inputs": ["aligned.bam"],
+        "outputs": ["alignment_stats.txt"]
+      },
+      {
+        "id": "plotResults",
+        "name": "Plot Results",
+        "description": "Plots alignment statistics using a custom Python script.",
+        "script": "python3 home/graziano/workflow/bin/plot_alignment.py alignment_stats.txt alignment_report.png",
+        "inputs": ["alignment_stats.txt"],
+        "outputs": ["alignment_report.png"]
+      }
+    ],
+    "config": {
+      "process": {
+        "withLabel": {
+          "bwa": {
+            "container": "biocontainers/bwa:v0.7.17_cv1"
+          },
+          "samtools": {
+            "container": "biocontainers/samtools:v1.9-4-deb_cv1"
+          },
+          "python": {
+            "container": "python:3.8"
+          }
+        }
+      },
+      "docker.enabled": true
+    }
+  }
+}
+
