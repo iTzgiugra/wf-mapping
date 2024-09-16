@@ -1,8 +1,11 @@
 {
   "workflow": {
-    "id": "alignment_workflow",
     "name": "Alignment Workflow",
+    "author": "Giuseppe", 
+    "homePage": "https://github.com/iTzgiugra/wf-mapping",  
     "description": "A workflow to align reads using BWA, convert to BAM using Samtools, generate alignment statistics, and plot the results using Python.",
+    "mainScript": "main.nf",
+    "nextflowVersion": "22.04.1",  
     "parameters": {
       "reference": {
         "description": "The reference genome file in FASTA format.",
@@ -67,4 +70,3 @@
     }
   }
 }
-
