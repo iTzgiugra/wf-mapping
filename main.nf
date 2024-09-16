@@ -7,6 +7,7 @@ params.sample = "sample.fastq"
 // Define the workflow
 workflow {
 
+    // Process to align reads
     process alignReads {
         label 'bwa'
         input:
@@ -23,52 +24,54 @@ workflow {
         """
     }
 
+    // Process to convert SAM to BAM
     process convertToBam {
         label 'samtools'
         input:
-        path "aligned.sam"
+        path alignedSam
 
         output:
         path "aligned.bam"
 
         script:
         """
-        samtools view -S -b aligned.sam > aligned.bam
+        samtools view -S -b $alignedSam > aligned.bam
         """
     }
 
+    // Process to generate statistics
     process generateStats {
         label 'samtools'
         input:
-        path "aligned.bam"
+        path alignedBam
 
         output:
         path "alignment_stats.txt"
 
         script:
         """
-        samtools flagstat aligned.bam > alignment_stats.txt
+        samtools flagstat $alignedBam > alignment_stats.txt
         """
     }
 
+    // Process to plot results
     process plotResults {
         label 'python'
         input:
-        path "alignment_stats.txt"
+        path alignmentStats
 
         output:
         path "alignment_report.png"
 
         script:
         """
-        python3 bin/plot_alignment.py alignment_stats.txt alignment_report.png
+        python3 bin/plot_alignment.py $alignmentStats alignment_report.png
         """
     }
 
     // Workflow steps
-    alignReads(params.reference, params.sample)
-    convertToBam()
-    generateStats()
-    plotResults()
+    alignedSam = alignReads(params.reference, params.sample)
+    alignedBam = convertToBam(alignedSam)
+    alignmentStats = generateStats(alignedBam)
+    plotResults(alignmentStats)
 }
-
