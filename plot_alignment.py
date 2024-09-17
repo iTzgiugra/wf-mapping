@@ -39,3 +39,4 @@ for index, row in df.iterrows():
 # Save the plot as a PNG image
 plt.savefig(output_file)
 plt.show()
+
