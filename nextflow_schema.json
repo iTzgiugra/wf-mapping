@@ -1,21 +1,21 @@
 {
   "workflow": {
     "name": "Alignment Workflow",
-    "author": "Giuseppe", 
-    "homePage": "https://github.com/iTzgiugra/wf-mapping",  
+    "author": "Giuseppe",
+    "homePage": "https://github.com/iTzgiugra/wf-mapping",
     "description": "A workflow to align reads using BWA, convert to BAM using Samtools, generate alignment statistics, and plot the results using Python.",
     "mainScript": "main.nf",
-    "nextflowVersion": "22.04.1",  
+    "nextflowVersion": "22.04.1",
     "parameters": {
       "reference": {
         "description": "The reference genome file in FASTA format.",
         "type": "file",
-        "default": "home/graziano/workflow/reference.fasta"
+        "default": "/home/graziano/reference/reference.fasta"
       },
       "sample": {
         "description": "The sample reads file in FASTQ format.",
         "type": "file",
-        "default": "home/graziano/workflow/sample.fastq"
+        "default": "/home/graziano/probe/sample.fastq"
       }
     },
     "steps": [
@@ -47,7 +47,7 @@
         "id": "plotResults",
         "name": "Plot Results",
         "description": "Plots alignment statistics using a custom Python script.",
-        "script": "python3 home/graziano/workflow/bin/plot_alignment.py alignment_stats.txt alignment_report.png",
+        "script": "python3 /home/graziano/wf-mapping/wf-mapping/bin/plot_alignment.py alignment_stats.txt alignment_report.png",
         "inputs": ["alignment_stats.txt"],
         "outputs": ["alignment_report.png"]
       }
