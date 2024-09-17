@@ -1,6 +1,8 @@
 #!/usr/bin/env nextflow
 
-// Define parameters with default values
+nextflow.enable.dsl=2
+
+// Input files
 params.reference = "reference.fasta"
 params.sample = "sample.fastq"
 
@@ -10,8 +12,6 @@ workflow {
     // Process to align reads
     process alignReads {
         label 'bwa'
-        container 'biocontainers/bwa:v0.7.17_cv1'
-        
         input:
         path reference
         path sample
@@ -29,51 +29,48 @@ workflow {
     // Process to convert SAM to BAM
     process convertToBam {
         label 'samtools'
-        container 'biocontainers/samtools:v1.9-4-deb_cv1'
-        
         input:
-        path alignedSam
+        path "aligned.sam"
 
         output:
         path "aligned.bam"
 
         script:
         """
-        samtools view -S -b $alignedSam > aligned.bam
+        samtools view -S -b aligned.sam > aligned.bam
         """
     }
 
     // Process to generate statistics
     process generateStats {
         label 'samtools'
-        container 'biocontainers/samtools:v1.9-4-deb_cv1'
-        
         input:
-        path alignedBam
+        path "aligned.bam"
 
         output:
         path "alignment_stats.txt"
 
         script:
         """
-        samtools flagstat $alignedBam > alignment_stats.txt
+        samtools flagstat aligned.bam > alignment_stats.txt
         """
     }
 
-    // Process to plot results
-    process plotResults {
+    // Process to calculate alignment percentage
+    process calculatePercentage {
         label 'python'
-        container 'python:3.8'
-        
+        container 'my-python-image' // Ensure the Docker image is correctly built and available
+
         input:
-        path alignmentStats
+        path "alignment_stats.txt"
 
         output:
-        path "alignment_report.png"
+        path "alignment_percentage.txt"
 
         script:
         """
-        python3 /usr/src/app/plot_alignment.py $alignmentStats alignment_report.png
+        cp /usr/src/app/calculate_percentage.py .
+        python calculate_percentage.py alignment_stats.txt alignment_percentage.txt
         """
     }
 
@@ -81,5 +78,5 @@ workflow {
     alignedSam = alignReads(params.reference, params.sample)
     alignedBam = convertToBam(alignedSam)
     alignmentStats = generateStats(alignedBam)
-    plotResults(alignmentStats)
+    calculatePercentage(alignmentStats)
 }
