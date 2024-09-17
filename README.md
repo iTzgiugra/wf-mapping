@@ -22,12 +22,12 @@ Dieser Workflow verwendet BWA zum Ausrichten von Reads an ein Referenzgenom, kon
 
 2. Navigiere in das Verzeichnis:
     ```bash
-    cd wf-mapping
+    cd wf-mapping/wf-mapping
     ```
 
 3. Führe den Workflow aus:
     ```bash
-    nextflow run main.nf --reference /path/to/reference.fasta --sample /path/to/sample.fastq
+    nextflow run main.nf --reference /home/graziano/reference/reference.fasta --sample /home/graziano/probe/sample.fastq
     ```
 
 ## Lizenz
