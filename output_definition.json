@@ -1,0 +1,61 @@
+{
+  "output_files": [
+    {
+      "name": "aligned.sorted.bam",
+      "description": "Sorted BAM file containing aligned reads.",
+      "type": "file",
+      "pattern": "*.sorted.aligned.bam",
+      "optional": false
+    },
+    {
+      "name": "aligned.sorted.bam.bai",
+      "description": "Index for the sorted BAM file.",
+      "type": "file",
+      "pattern": "*.sorted.aligned.bam.bai",
+      "optional": false
+    },
+    {
+      "name": "bamstats.flagstat.tsv",
+      "description": "Flagstat report from BAM file statistics.",
+      "type": "file",
+      "pattern": "*.flagstat.tsv",
+      "optional": false
+    },
+    {
+      "name": "bamstats.readstats.tsv.gz",
+      "description": "Read statistics from BAM file, if available.",
+      "type": "file",
+      "pattern": "*.readstats.tsv.gz",
+      "optional": true
+    },
+    {
+      "name": "report.html",
+      "description": "HTML report summarizing alignment and coverage results.",
+      "type": "file",
+      "pattern": "*.html",
+      "optional": false
+    },
+    {
+      "name": "depth.all_regions.bed.gz",
+      "description": "Depth coverage across all reference regions.",
+      "type": "file",
+      "pattern": "depth.all_regions.bed.gz",
+      "optional": true
+    },
+    {
+      "name": "versions.txt",
+      "description": "Text file containing the software versions used in the pipeline.",
+      "type": "file",
+      "pattern": "versions.txt",
+      "optional": false
+    },
+    {
+      "name": "params.json",
+      "description": "JSON file with the parameters used in the workflow.",
+      "type": "file",
+      "pattern": "params.json",
+      "optional": false
+    }
+  ]
+}
+
