@@ -1,6 +1,6 @@
 #!/usr/bin/env nextflow
 
-// Input files
+// Define parameters with default values
 params.reference = "reference.fasta"
 params.sample = "sample.fastq"
 
@@ -10,6 +10,8 @@ workflow {
     // Process to align reads
     process alignReads {
         label 'bwa'
+        container 'biocontainers/bwa:v0.7.17_cv1'
+        
         input:
         path reference
         path sample
@@ -27,6 +29,8 @@ workflow {
     // Process to convert SAM to BAM
     process convertToBam {
         label 'samtools'
+        container 'biocontainers/samtools:v1.9-4-deb_cv1'
+        
         input:
         path alignedSam
 
@@ -42,6 +46,8 @@ workflow {
     // Process to generate statistics
     process generateStats {
         label 'samtools'
+        container 'biocontainers/samtools:v1.9-4-deb_cv1'
+        
         input:
         path alignedBam
 
@@ -57,6 +63,8 @@ workflow {
     // Process to plot results
     process plotResults {
         label 'python'
+        container 'python:3.8'
+        
         input:
         path alignmentStats
 
@@ -65,7 +73,7 @@ workflow {
 
         script:
         """
-        python3 bin/plot_alignment.py $alignmentStats alignment_report.png
+        python3 /usr/src/app/plot_alignment.py $alignmentStats alignment_report.png
         """
     }
 
